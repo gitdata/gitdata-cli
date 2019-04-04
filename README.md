@@ -1,3 +1,3 @@
-GitData Library
+GitData
 ====
-Core GitData library and command line interface.
+Data Wrangling for Everyone.

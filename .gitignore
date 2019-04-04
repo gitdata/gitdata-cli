@@ -1,0 +1,13 @@
+*\.pyc
+*\.swp
+*py\.swo
+testsold
+.ropeproject
+.coverage
+*.log
+.linter*
+__pycache__
+/*\.png
+.vscode
+docs/_build
+
