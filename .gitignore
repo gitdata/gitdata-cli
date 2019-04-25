@@ -10,4 +10,6 @@ __pycache__
 /*\.png
 .vscode
 docs/_build
-
+build
+dist
+gitdata_cli.egg-info
