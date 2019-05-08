@@ -17,3 +17,9 @@ create table `facts` (
   `datatype` varchar(30),
   `value` mediumtext
 );
+
+drop table if exists 'remotes';
+create table `remotes` (
+  `name` varchar(100) not null primary key,
+  `location` varchar(1000) not null
+);

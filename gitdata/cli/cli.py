@@ -1,52 +1,64 @@
 """
-    gitdata cli
+usage: gitdata [-V | --version] [-v | --verbose] [--help] <command> [<args>...]
+
+The most commonly used gitdata commands are:
+   init       Create an empty GitData repository in a new directory
+   remote     Manage set of remote locations
+   status     Show the data repository status
+
+See 'gitdata help <command>' for more information on a specific command.
+
 """
 
-import os
-import argparse
+import docopt
 import logging
+import os
+import sys
 
 import gitdata
+import gitdata.cli
 import gitdata.repositories
 
 
-def init(args):
-    """init command"""
-    gitdata.repositories.initialize(os.getcwd())
-
-
-def status(args):
-    """init command"""
-    gitdata.repositories.status(os.getcwd())
-
-
 def main():
-    """Main program
 
-    called by gidata/bin/cdw
-    """
-    # pylint: disable=line-too-long
+    args = docopt.docopt(__doc__,
+                         version='gitdata version {}'.format(gitdata.__version__),
+                         options_first=True)
 
-    parser = argparse.ArgumentParser()
-    help = lambda a: parser.print_help()
-    parser.add_argument(
-        '-V', '--version', dest='func', action='store_const',
-        const=gitdata.__version__, default=help
-    )
-    subparsers = parser.add_subparsers()
+    verbose = False
+    if '<args>' in args:
+        if '-v' in args['<args>']:
+            verbose = True
 
-    # create a data repository
-    new_parser = subparsers.add_parser('init')
-    new_parser.add_argument('-v', '--verbose', action='store_true', help='verbose console output')
-    new_parser.set_defaults(func=init)
+    if args['<command>'] == 'help':
+        topic = next(iter(args['<args>']), None)
 
-    # show repository status
-    new_parser = subparsers.add_parser('status')
-    new_parser.set_defaults(func=status)
+        if topic == 'init':
+            print(gitdata.repositories.INIT_HELP)
+        elif topic == 'remote':
+            print(gitdata.cli.cli_remote.__doc__)
+        elif topic == 'status':
+            print(gitdata.repositories.STATUS_HELP)
+        elif topic:
+            exit("%r is not a gitdata command. See 'gitdata help'." % topic)
+        else:
+            exit(__doc__)
 
-    # run
-    args = parser.parse_args()
-    if 'func' in args:
-        args.func(args)
+    elif args['<command>'] == 'init':
+        gitdata.repositories.initialize(os.getcwd())
+
+    elif args['<command>'] == 'remote':
+        gitdata.cli.remote()
+
+    elif args['<command>'] == 'status':
+        with gitdata.repositories.Repository(os.getcwd()) as repository:
+            print(repository.status(verbose=verbose))
+
     else:
-        parser.print_help()
+        exit("%r is not a gitdata command. See 'gitdata --help'." % args['<command>'])
+
+
+if __name__ == '__main__':
+    main()
+
