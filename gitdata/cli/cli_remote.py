@@ -21,7 +21,9 @@ def remote():
         repostitory = gitdata.repositories.Repository()
         repostitory.remotes().add(name, location)
     elif arguments['rm']:
-        print('removing remote {}'.format(arguments['<name>']))
+        name = arguments['<name>']
+        repostitory = gitdata.repositories.Repository()
+        repostitory.remotes().remove(name)
     else:
         repostitory = gitdata.repositories.Repository()
         print(repostitory.remotes())

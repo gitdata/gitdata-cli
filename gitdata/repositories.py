@@ -88,10 +88,20 @@ class RepositoryRemotes(object):
         try:
             cmd = 'insert into remotes (name, location) values (?, ?)'
             db.execute(cmd, (name, location))
-            db.execute('select * from remotes')
-            # print(db.fetchall())
             self.repository.connection.commit()
-            # print(result.__dict__)
+        finally:
+            db.close()
+
+    def remove(self, name):
+        """Remove a remote"""
+        if name not in [name for name,_ in self.index()]:
+            print('fatal: no such remote: {}'.format(name))
+            sys.exit(-1)
+        db = self.repository.connection.cursor()
+        try:
+            cmd = 'delete from remotes where name = ?'
+            db.execute(cmd, (name,))
+            self.repository.connection.commit()
         finally:
             db.close()
 
