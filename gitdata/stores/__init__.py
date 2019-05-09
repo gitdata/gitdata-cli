@@ -1,0 +1,3 @@
+"""
+    gidata stores
+"""

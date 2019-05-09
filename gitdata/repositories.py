@@ -39,7 +39,7 @@ def initialize(location):
 
 def setup_repository(connection):
     """Setup the sqlite3 repsoitory database"""
-    filename = gitdata.utils.lib_path('sql/create_respository_sqlite3.sql')
+    filename = gitdata.utils.lib_path('sql/create_repository_sqlite3.sql')
     sql = gitdata.utils.load(filename)
     commands = list(filter(bool, sql.split(';\n')))
     cursor = connection.cursor()
