@@ -89,6 +89,12 @@ class RepositoryRemotes(object):
             cmd = 'insert into remotes (name, location) values (?, ?)'
             db.execute(cmd, (name, location))
             self.repository.connection.commit()
+        except sqlite3.IntegrityError as e:
+            if str(e) == 'UNIQUE constraint failed: remotes.name':
+                print('remote exists')
+                sys.exit(-1)
+            else:
+                raise
         finally:
             db.close()
 
