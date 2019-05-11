@@ -84,6 +84,8 @@ class RepositoryRemotes(object):
 
     def add(self, name, location):
         """Add a remote"""
+        if os.path.exists(location):
+            location = os.path.realpath(location)
         db = self.repository.connection.cursor()
         try:
             cmd = 'insert into remotes (name, location) values (?, ?)'
