@@ -9,9 +9,11 @@ import sqlite3
 import uuid
 
 import gitdata
+from . import common
 
 
 def get_uid():
+    """Get a unique id"""
     return uuid.uuid4().hex
 
 
@@ -70,15 +72,17 @@ def entify(facts):
     return entity
 
 
-class Sqlite3Store(gitdata.stores.common.AbstractStore):
+class Sqlite3Store(common.AbstractStore):
+    """Sqlite3 based Entity Store"""
 
     def __init__(self, *args, **kwargs):
         self.connection = sqlite3.Connection(*args, **kwargs)
         with self.connection:
             cursor = self.connection.cursor()
 
-            filename = gitdata.utils.lib_path('sql/create_repository_sqlite3.sql')
-            sql = gitdata.utils.load(filename)
+            filename = 'sql/create_repository_sqlite3.sql'
+            pathname = gitdata.utils.lib_path(filename)
+            sql = gitdata.utils.load(pathname)
             commands = list(filter(bool, sql.split(';\n')))
 
             for command in commands:
@@ -88,7 +92,7 @@ class Sqlite3Store(gitdata.stores.common.AbstractStore):
         """stores an entity"""
 
         def fixval(d):
-            if type(d) == datetime:
+            if isinstance(d, datetime):
                 # avoids reliance on strftime that lacks support
                 # for dates before 1900 in some databases
                 return "%02d-%02d-%02d %02d:%02d:%02d" % (
@@ -99,7 +103,7 @@ class Sqlite3Store(gitdata.stores.common.AbstractStore):
                     d.minute,
                     d.second
                 )
-            if type(d) == Decimal:
+            if isinstance(d, Decimal):
                 return str(d)
             if isinstance(d, bytes):
                 return base64.b64encode(d)
@@ -163,5 +167,4 @@ class Sqlite3Store(gitdata.stores.common.AbstractStore):
         """clear the entity store"""
         select = 'delete from facts'
         cursor = self.connection.cursor()
-        cursor.execute(select, (uid,))
-
+        cursor.execute(select)

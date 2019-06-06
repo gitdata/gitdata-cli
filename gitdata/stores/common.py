@@ -4,19 +4,16 @@
 
 
 class AbstractStore(object):
+    """Abstract Entity Store"""
 
     def put(self, entity):
         """put assertions into the entity store"""
-        pass
 
-    def get(self, entity_id):
+    def get(self, uid):
         """get assertions from the entity store"""
-        pass
 
-    def delete(self, entity):
+    def delete(self, uid):
         """delete assertions from the entity store"""
-        pass
 
     def clear(self):
         """clear the entity store"""
-        pass

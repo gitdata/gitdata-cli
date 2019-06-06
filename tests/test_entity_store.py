@@ -1,10 +1,9 @@
 """
     entity store tests
 """
+# pylint: disable=missing-docstring, no-member
 
 from decimal import Decimal
-
-import sqlite3
 import unittest
 
 import gitdata
@@ -12,7 +11,6 @@ import gitdata
 
 class EntityStoreSuite(object):
     """Standard Entity Store Test Suite"""
-    # pylint: disable=no-member
 
     facts = [
         dict(name='Pat', score=5, rate=Decimal('5')),
@@ -39,6 +37,28 @@ class EntityStoreSuite(object):
 
         self.assertEqual(
             self.store.get(ids[1]),
+            None
+        )
+
+        self.assertEqual(
+            self.store.get(ids[2]),
+            {'name': 'Terry', 'score': 2, 'rate': Decimal('2')}
+        )
+
+    def test_clear(self):
+        ids = []
+        for fact in self.facts:
+            ids.append(self.store.put(fact))
+
+        self.store.clear()
+
+        self.assertEqual(
+            self.store.get(ids[1]),
+            None
+        )
+
+        self.assertEqual(
+            self.store.get(ids[2]),
             None
         )
 
@@ -73,4 +93,3 @@ class Sqlite3StoreTests(EntityStoreSuite, unittest.TestCase):
 
     def setUp(self):
         self.store = gitdata.stores.sqlite3.Sqlite3Store(':memory:')
-

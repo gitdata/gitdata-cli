@@ -4,9 +4,10 @@
 
 import uuid
 
-import gitdata
+from . import common
 
-class MemoryStore(gitdata.stores.common.AbstractStore):
+class MemoryStore(common.AbstractStore):
+    """Memory based Entity Store"""
 
     storage = {}
 
@@ -27,4 +28,3 @@ class MemoryStore(gitdata.stores.common.AbstractStore):
     def clear(self):
         """clear the entity store"""
         self.storage = {}
-
