@@ -4,6 +4,7 @@
 
 import logging
 import os
+import pathlib
 import sqlite3
 import sys
 
@@ -67,6 +68,20 @@ def status(location, verbose=False):
             print('pathname is %r' % pathname)
         sys.exit(-1)
 
+
+class Subject(dict):
+    """Graph subject"""
+
+    def show(self):
+        return gitdata.utils.space(
+            (name, repr(value))
+            for name, value in self.items()
+        )
+
+    def __str__(self):
+        return self.show()
+
+
 class RepositoryRemotes(object):
 
     def __init__(self, repository):
@@ -85,7 +100,7 @@ class RepositoryRemotes(object):
     def add(self, name, location):
         """Add a remote"""
         if os.path.exists(location):
-            location = os.path.realpath(location)
+            location = gitdata.utils.as_uri(location)
         db = self.repository.connection.cursor()
         try:
             cmd = 'insert into remotes (name, location) values (?, ?)'
@@ -113,14 +128,23 @@ class RepositoryRemotes(object):
         finally:
             db.close()
 
+    def get(self, name):
+        db = self.repository.connection.cursor()
+        try:
+            db.execute('select location from remotes where name=?', (name,))
+            result = db.fetchall()
+            if result:
+                return Subject(
+                    name=name,
+                    location=result[0][0]
+                )
+        finally:
+            db.close()
+
     def __str__(self):
         remotes = self.index()
         if remotes:
-            maxlen = max(len(name) for name,_ in remotes)
-            return '\n'.join(
-                '{:{width}}  {}'.format(width=maxlen, *remote)
-                for remote in remotes
-            )
+            return gitdata.utils.space(remotes)
         else:
             return 'no remotes'
 
@@ -151,6 +175,11 @@ class Repository(object):
         """Close the repository"""
         self.cursor.close()
 
+    def get(self, name):
+        remote = self.remotes().get(name)
+        if remote:
+            return remote
+
     def __enter__(self):
         self.open()
         return self
@@ -159,6 +188,17 @@ class Repository(object):
         self.close()
         if value:
             raise value
+
+    def show(self, args):
+        """Show objects"""
+        if args:
+            for name in args:
+                subject = self.get(name)
+                if subject:
+                    print(subject)
+        else:
+            remotes = [name for name,_ in self.remotes().index()]
+            print('\n'.join(remotes))
 
     def status(self, verbose=False):
         """Return the repository status"""

@@ -4,6 +4,7 @@
 
 import uuid
 import os.path
+import platform
 
 
 def new_uid():
@@ -30,4 +31,9 @@ def space(items):
     lengths = [max([len(item[i]) for r, item in enumerate(items)]) for i in range(max_len)]
     fmt ='  '.join(('{:%s.%s}' % (length,length)) for length in lengths)
     return '\n'.join(fmt.format(*item) for item in items)
+
+
+def as_uri(location):
+    """Returns a local file system location as a file URI (rfc8089)"""
+    return 'file://{}{}'.format(platform.node(), os.path.realpath(location))
 

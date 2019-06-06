@@ -25,6 +25,36 @@ is typically pulled in from other data sources and is stored in the data
 repository for quick access.
 
 <pre>
-init   - initialize a new data repository
-status - show repository status
+gitdata init   # initialize a new data repository
+gitdata status # show repository status
 </pre>
+
+#### Remotes
+Remotes are connections you can establish within your data repository to make it
+easier to access data from external sources like the internet or somewhere on your
+network or even a local disk.  When you add a remote you give it a name which can
+then be used to refer to that remote from within the repostitory.
+
+To see the remotes for a data repository you can just run the `gitdata remote` command
+which will list the names of the repositories.  If you want to see the URLs the remotes
+correspond to you can use the `-v` flag to produce a verbose listing.
+
+<pre>
+gitdata remote      # list remotes
+gitdata remote -v   # verbose list remotes
+</pre>
+
+##### Adding Remotes
+Adding a remote so you can refer to the remote by the short name is as simple as
+using `remote add <shortname> <url>`.
+
+##### Removing Remotes
+You can remove a remote from your project by using the `gitdata remote rm <shortname>` command.
+
+
+#### Showing
+Data repositories are a collection of entities containing facts.  To view any
+entity within the repostitory you can use the `gitdata show <name>` command, where
+name is the name of the entity.  So, for example, if you've stored a remote
+in your repostitry, you can see the details of that remote by using the show
+command.

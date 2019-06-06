@@ -4,6 +4,7 @@ usage: gitdata [-V | --version] [-v | --verbose] [--help] <command> [<args>...]
 The most commonly used gitdata commands are:
    init       Create an empty GitData repository in a new directory
    remote     Manage set of remote locations
+   show       Show an entity
    status     Show the data repository status
 
 See 'gitdata help <command>' for more information on a specific command.
@@ -50,6 +51,10 @@ def main():
 
     elif args['<command>'] == 'remote':
         gitdata.cli.remote()
+
+    elif args['<command>'] == 'show':
+        with gitdata.repositories.Repository(os.getcwd()) as repository:
+            repository.show(args['<args>'])
 
     elif args['<command>'] == 'status':
         with gitdata.repositories.Repository(os.getcwd()) as repository:
