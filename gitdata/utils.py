@@ -22,3 +22,12 @@ def load(pathname):
     with open(pathname) as source:
         return source.read()
 
+
+def space(items):
+    """Space items evenly into columns"""
+    items = list(items)
+    max_len = max(map(len, items))
+    lengths = [max([len(item[i]) for r, item in enumerate(items)]) for i in range(max_len)]
+    fmt ='  '.join(('{:%s.%s}' % (length,length)) for length in lengths)
+    return '\n'.join(fmt.format(*item) for item in items)
+
