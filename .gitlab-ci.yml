@@ -20,7 +20,7 @@ nosetests:
 
 deploy_qa:
   stage: deploy
-  image: dsilabs/zoom
+  image: ubuntu:18.04
   script:
     - BASE_URL=`echo $CI_REPOSITORY_URL | sed "s;\/*$CI_PROJECT_PATH.*;;"`
     - git clone "$BASE_URL/dsilabs/deploy-lib.git" /tmp/deploy
