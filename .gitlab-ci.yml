@@ -9,6 +9,7 @@ before_script:
 
 stages:
   - test
+  - deploy
 
 nosetests:
   stage: test
@@ -18,4 +19,10 @@ nosetests:
     - pip3.7 install -r requirements.txt
     - nosetests -vx --with-doctest tests
 
+deploy_qa:
+  stage: deploy
 
+  script:
+    - BASE_URL=`echo $CI_REPOSITORY_URL | sed "s;\/*$CI_PROJECT_PATH.*;;"`
+    - git clone "$BASE_URL/dsilabs/deploy-lib.git" /tmp/deploy
+    - source /tmp/deploy/run.sh
