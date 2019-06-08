@@ -13,7 +13,6 @@ stages:
 
 nosetests:
   stage: test
-
   script:
     - pip3.7 install coverage nose
     - pip3.7 install -r requirements.txt
@@ -21,7 +20,7 @@ nosetests:
 
 deploy_qa:
   stage: deploy
-
+  image: dsilabs/zoom
   script:
     - BASE_URL=`echo $CI_REPOSITORY_URL | sed "s;\/*$CI_PROJECT_PATH.*;;"`
     - git clone "$BASE_URL/dsilabs/deploy-lib.git" /tmp/deploy
