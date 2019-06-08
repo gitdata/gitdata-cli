@@ -8,8 +8,7 @@ before_script:
   - python3.7 --version
 
 stages:
-  test
-
+  - test
 
 nosetests:
   stage: test
