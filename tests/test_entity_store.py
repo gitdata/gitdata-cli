@@ -18,7 +18,7 @@ class EntityStoreSuite(object):
         dict(name='Terry', score=2, rate=Decimal('2')),
     ]
 
-    def test_add(self):
+    def test_put(self):
         ids = []
         for fact in self.facts:
             ids.append(self.store.put(fact))
@@ -89,7 +89,7 @@ class MemoryStoreTests(EntityStoreSuite, unittest.TestCase):
 
 
 class Sqlite3StoreTests(EntityStoreSuite, unittest.TestCase):
-    """Memory Store Tests"""
+    """Sqlite3 Store Tests"""
 
     def setUp(self):
         self.store = gitdata.stores.sqlite3.Sqlite3Store(':memory:')
