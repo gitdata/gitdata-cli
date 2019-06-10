@@ -4,11 +4,11 @@
 
 import logging
 import os
-import pathlib
 import sqlite3
 import sys
 
 import gitdata.utils
+import gitdata.connectors
 
 INIT_HELP = """
 Initializes a gitdata repository in the current directory.
@@ -20,6 +20,17 @@ STATUS_HELP = """
 Returns the status of the current gitdata repository.
 
 usage: gitdata status [-v | --verbose]
+
+options:
+    -v, --verbose   verbose output
+"""
+
+FETCH_HELP = """
+Fetches facts from a specified location.  A location can be a URL, a
+local file or a predefined gitdata repository remote.
+
+usage:
+    gitdata fetch [-v | --verbose] <location>
 
 options:
     -v, --verbose   verbose output
@@ -73,6 +84,7 @@ class Subject(dict):
     """Graph subject"""
 
     def show(self):
+        """Show the subject"""
         return gitdata.utils.space(
             (name, repr(value))
             for name, value in self.items()
@@ -184,7 +196,7 @@ class Repository(object):
         self.open()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, _, value, traceback):
         self.close()
         if value:
             raise value
@@ -199,6 +211,11 @@ class Repository(object):
         else:
             remotes = [name for name,_ in self.remotes().index()]
             print('\n'.join(remotes))
+
+    def fetch(self, location):
+        """Fetch facts"""
+        facts = gitdata.connectors.fetch(location)
+        print(list(facts))
 
     def status(self, verbose=False):
         """Return the repository status"""
