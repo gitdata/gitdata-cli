@@ -72,3 +72,18 @@ class TestDigester(unittest.TestCase):
             ],
         )
 
+    def test_dict_with_subdict(self):
+        uid = self.digester.digest(
+            dict(name='Joe', age=12, friend=dict(name='Adam', age=12))
+        )
+        self.assertEqual(
+            self.digester.known,
+            [
+                (1, 'name', 'Joe'),
+                (1, 'age', 12),
+                (2, 'name', 'Adam'),
+                (2, 'age', 12),
+                (1, 'friend', 2)
+            ]
+        )
+
