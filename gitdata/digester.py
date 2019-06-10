@@ -8,6 +8,7 @@ import gitdata
 
 
 class Digester(object):
+    """Digest arbitrary data structures into triples"""
 
     known = []
 
