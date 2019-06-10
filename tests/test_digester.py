@@ -87,3 +87,28 @@ class TestDigester(unittest.TestCase):
             ]
         )
 
+    def test_dict_with_list(self):
+        uid = self.digester.digest(
+            dict(
+                name='Joe',
+                age=12,
+                friend=[
+                    dict(name='Adam', age=12),
+                    dict(name='Jim', age=22),
+                ]
+            ),
+        )
+        self.assertEqual(
+            self.digester.known,
+            [
+                (1, 'name', 'Joe'),
+                (1, 'age', 12),
+                (3, 'name', 'Adam'),
+                (3, 'age', 12),
+                (2, 'includes', 3),
+                (4, 'name', 'Jim'),
+                (4, 'age', 22),
+                (2, 'includes', 4),
+                (1, 'friend', 2)
+            ]
+        )
