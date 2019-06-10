@@ -13,6 +13,9 @@ class Sqlite3Store(AbstractStore):
 
     def __init__(self, *args, **kwargs):
         self.connection = sqlite3.Connection(*args, **kwargs)
+
+    def setup(self):
+        """Set up the persistent data store"""
         with self.connection:
             cursor = self.connection.cursor()
 

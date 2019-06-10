@@ -11,6 +11,11 @@ class MemoryStore(common.AbstractStore):
 
     storage = {}
 
+    def setup(self):
+        """Setup persistent store"""
+        # not used for MemoryStore
+        pass
+
     def put(self, entity):
         """put assertions into the entity store"""
         uid = entity.get('uid', uuid.uuid4().hex)

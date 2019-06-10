@@ -14,6 +14,7 @@ class MemoryStoreTests(EntityStoreSuite, unittest.TestCase):
 
     def setUp(self):
         self.store = gitdata.stores.memory.MemoryStore()
+        self.store.setup()
 
 
 class Sqlite3StoreTests(EntityStoreSuite, unittest.TestCase):
@@ -21,3 +22,4 @@ class Sqlite3StoreTests(EntityStoreSuite, unittest.TestCase):
 
     def setUp(self):
         self.store = gitdata.stores.sqlite3.Sqlite3Store(':memory:')
+        self.store.setup()
