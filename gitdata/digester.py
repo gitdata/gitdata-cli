@@ -44,4 +44,5 @@ class Digester(object):
 def digested(data):
     """Digest data retreived from a URL"""
     digester = Digester()
-    return digester.digest(data).known
+    digester.digest(data)
+    return digester.known
