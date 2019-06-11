@@ -2,17 +2,13 @@
 # GitLab CI
 #
 
-image: python:3.7
-
-before_script:
-  - python3.7 --version
-
 stages:
   - test
   - deploy
 
 nosetests:
   stage: test
+  image: python:3.7
   script:
     - pip3.7 install coverage nose
     - pip3.7 install -r requirements.txt
