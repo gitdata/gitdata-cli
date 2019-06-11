@@ -16,6 +16,51 @@ def get_uid():
     return uuid.uuid4().hex
 
 
+def retype(value, value_type):
+    """Convert a value back to its original type"""
+    if value_type == 'str':
+        pass
+
+    elif value_type == "int":
+        value = int(value)
+
+    elif value_type == 'float':
+        value = float(value)
+
+    elif value_type == 'decimal.Decimal':
+        value = Decimal(value)
+
+    elif value_type == "datetime.date":
+        y = int(value[:4])
+        m = int(value[5:7])
+        d = int(value[8:10])
+        value = date(y, m, d)
+
+    elif value_type == "datetime.datetime":
+        y = int(value[:4])
+        m = int(value[5:7])
+        d = int(value[8:10])
+        hr = int(value[11:13])
+        mn = int(value[14:16])
+        sc = int(value[17:19])
+        value = datetime(y, m, d, hr, mn, sc)
+
+    elif value_type == 'bool':
+        value = (value == '1' or value == 'True')
+
+    elif value_type == 'NoneType':
+        value = None
+
+    elif value_type == 'bytes':
+        value = base64.b64decode(value)
+
+    else:
+        msg = 'unsupported data type: ' + repr(value_type)
+        raise Exception(msg)
+
+    return value
+
+
 def entify(facts):
     """
     converts facts back into an entity dict
@@ -25,46 +70,47 @@ def entify(facts):
 
     entity = {}
     for _, attribute, value_type, value in facts:
+        value = retype(value, value_type)
 
-        if value_type == 'str':
-            pass
+        # if value_type == 'str':
+        #     pass
 
-        elif value_type == "int":
-            value = int(value)
+        # elif value_type == "int":
+        #     value = int(value)
 
-        elif value_type == 'float':
-            value = float(value)
+        # elif value_type == 'float':
+        #     value = float(value)
 
-        elif value_type == 'decimal.Decimal':
-            value = Decimal(value)
+        # elif value_type == 'decimal.Decimal':
+        #     value = Decimal(value)
 
-        elif value_type == "datetime.date":
-            y = int(value[:4])
-            m = int(value[5:7])
-            d = int(value[8:10])
-            value = date(y, m, d)
+        # elif value_type == "datetime.date":
+        #     y = int(value[:4])
+        #     m = int(value[5:7])
+        #     d = int(value[8:10])
+        #     value = date(y, m, d)
 
-        elif value_type == "datetime.datetime":
-            y = int(value[:4])
-            m = int(value[5:7])
-            d = int(value[8:10])
-            hr = int(value[11:13])
-            mn = int(value[14:16])
-            sc = int(value[17:19])
-            value = datetime(y, m, d, hr, mn, sc)
+        # elif value_type == "datetime.datetime":
+        #     y = int(value[:4])
+        #     m = int(value[5:7])
+        #     d = int(value[8:10])
+        #     hr = int(value[11:13])
+        #     mn = int(value[14:16])
+        #     sc = int(value[17:19])
+        #     value = datetime(y, m, d, hr, mn, sc)
 
-        elif value_type == 'bool':
-            value = (value == '1' or value == 'True')
+        # elif value_type == 'bool':
+        #     value = (value == '1' or value == 'True')
 
-        elif value_type == 'NoneType':
-            value = None
+        # elif value_type == 'NoneType':
+        #     value = None
 
-        elif value_type == 'bytes':
-            value = base64.b64decode(value)
+        # elif value_type == 'bytes':
+        #     value = base64.b64decode(value)
 
-        else:
-            msg = 'unsupported data type: ' + repr(value_type)
-            raise Exception(msg)
+        # else:
+        #     msg = 'unsupported data type: ' + repr(value_type)
+        #     raise Exception(msg)
 
         entity[attribute] = value
 
