@@ -12,6 +12,20 @@ def new_uid():
     return uuid.uuid4().int
 
 
+def new_test_uid(start=0):
+    """a simple id generator for testing
+
+    Returns a simple id generator that with a given integer
+    and increments by one ech time its called which allows
+    predictable uid values for testing.
+    """
+    n = [start]
+    def _new_id():
+        n[0] += 1
+        return n[0]
+    return _new_id
+
+
 def lib_path(pathname):
     """return a path relative to this repository"""
     location = os.path.dirname(__file__)

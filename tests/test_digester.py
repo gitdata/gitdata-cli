@@ -6,26 +6,12 @@ import unittest
 import datetime
 
 from gitdata.digester import digested, Digester
-
-
-def new_uid(start=0):
-    """a simple id generator
-
-    Returns a simple id generator that starts where ever we
-    want and increments by one ech time its called.  Allows
-    easy predictable testing.
-    """
-    n = [start]
-    def _new_id():
-        n[0] += 1
-        return n[0]
-    return _new_id
-
+from gitdata.utils import new_test_uid
 
 class TestDigester(unittest.TestCase):
 
     def setUp(self):
-        self.digester = Digester(new_uid=new_uid(0))
+        self.digester = Digester(new_uid=new_test_uid(0))
         self.digester.known = []
 
     def test_dict(self):
