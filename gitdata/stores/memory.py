@@ -9,32 +9,50 @@ from . import common
 class MemoryStore(common.AbstractStore):
     """Memory based Entity Store"""
 
-    storage = {}
+    facts = []
 
     def setup(self):
         """Setup persistent store"""
-        # not used for MemoryStore
-        pass
+        self.facts = []
 
     def add(self, facts):
-        for entity, attribute, value in facts:
-            self.storage.setdefault(
-                entity, {})[attribute] = value
+        self.facts.extend(facts)
 
     def put(self, entity):
         """put assertions into the entity store"""
         uid = entity.get('uid', uuid.uuid4().hex)
-        self.storage.setdefault(uid, {}).update(entity)
+        facts = ((uid, attribute, value) for attribute, value in entity.items())
+        self.add(facts)
         return uid
 
     def get(self, uid):
         """get assertions from the entity store"""
-        return self.storage.get(uid)
+        result = {}
+        for entity, attribute, value in self.facts:
+            if entity == uid:
+                result[attribute] = value
+        return result or None
 
     def delete(self, uid):
         """delete assertions from the entity store"""
-        self.storage.pop(uid)
+        self.facts[:] = (fact for fact in self.facts if fact[0] != uid)
 
     def clear(self):
         """clear the entity store"""
-        self.storage = {}
+        self.facts = []
+
+    def triples(self, pattern):
+        """Return triples matching pattern"""
+
+        sub, pred, obj = pattern
+
+        data = [
+            (entity, attribute, value)
+            for (entity, attribute, value) in self.facts
+            if (
+                (sub is None or sub == entity) and
+                (pred is None or pred == attribute) and
+                (obj is None or obj == value)
+            )
+        ]
+        return data

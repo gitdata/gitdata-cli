@@ -16,25 +16,26 @@ class EntityStoreSuite(object):
         dict(name='Terry', score=2, rate=Decimal('2')),
     ]
 
-    facts = [
+    triples = [
         (2, 'name', 'Joe'),
         (2, 'age', 12),
         (1, 'includes', 2),
         (3, 'name', 'Sally'),
+        (3, 'wage', 22.1),
         (1, 'includes', 3),
     ]
 
     def test_add(self):
         joe = self.store.get(1)
         self.assertEqual(joe, None)
-        self.store.add(self.facts)
+        self.store.add(self.triples)
         joe = self.store.get(2)
         self.assertEqual(joe['name'], 'Joe')
 
     def test_put(self):
         ids = []
-        for fact in self.entities:
-            ids.append(self.store.put(fact))
+        for entity in self.entities:
+            ids.append(self.store.put(entity))
 
         self.assertEqual(
             self.store.get(ids[1]),
@@ -92,3 +93,88 @@ class EntityStoreSuite(object):
             new_id = self.store.put(dict(value=value))
             entity = self.store.get(new_id)
             self.assertEqual(entity['value'], value)
+
+    def test_spo(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((2, 'name', 'Joe'))),
+            [(2, 'name', 'Joe')],
+        )
+
+    def test_spn(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((3, 'name', None))),
+            [
+                (3, 'name', 'Sally')
+            ],
+        )
+
+    def test_sno(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((2, None, 'Joe'))),
+            [
+                (2, 'name', 'Joe')
+            ],
+        )
+
+    def test_snn(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((3, None, None))),
+            [
+                (3, 'name', 'Sally'),
+                (3, 'wage', 22.1),
+            ],
+        )
+
+    def test_npo(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((None, 'name', 'Sally'))),
+            [
+                (3, 'name', 'Sally'),
+            ],
+        )
+
+    def test_npn(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((None, 'name', None))),
+            [
+                (2, 'name', 'Joe'),
+                (3, 'name', 'Sally'),
+            ],
+        )
+
+    def test_nno(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((None, None, 12))),
+            [
+                (2, 'age', 12),
+            ],
+        )
+
+    def test_nnn(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(
+            list(self.store.triples((None, None, None))),
+            [
+                (2, 'name', 'Joe'),
+                (2, 'age', 12),
+                (1, 'includes', 2),
+                (3, 'name', 'Sally'),
+                (3, 'wage', 22.1),
+                (1, 'includes', 3),
+            ],
+        )
