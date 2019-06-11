@@ -20,7 +20,6 @@ class MemoryStore(common.AbstractStore):
         for entity, attribute, value in facts:
             self.storage.setdefault(
                 entity, {})[attribute] = value
-        print(self.storage)
 
     def put(self, entity):
         """put assertions into the entity store"""
