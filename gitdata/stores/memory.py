@@ -16,6 +16,12 @@ class MemoryStore(common.AbstractStore):
         # not used for MemoryStore
         pass
 
+    def add(self, facts):
+        for entity, attribute, value in facts:
+            self.storage.setdefault(
+                entity, {})[attribute] = value
+        print(self.storage)
+
     def put(self, entity):
         """put assertions into the entity store"""
         uid = entity.get('uid', uuid.uuid4().hex)

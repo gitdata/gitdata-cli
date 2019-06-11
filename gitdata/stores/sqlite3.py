@@ -7,6 +7,16 @@ import sqlite3
 import gitdata
 from .common import fixval, get_type_str, AbstractStore, get_uid, entify
 
+valid_types = [
+    'str', 'bytes', 'int', 'float', 'decimal.Decimal',
+    'datetime.date', 'datetime.datetime', 'bool', 'NoneType',
+]
+
+insert = (
+    'insert into facts ('
+    '    entity, attribute, value_type, value'
+    ') values (?, ?, ?, ?)'
+)
 
 class Sqlite3Store(AbstractStore):
     """Sqlite3 based Entity Store"""
@@ -27,6 +37,21 @@ class Sqlite3Store(AbstractStore):
             for command in commands:
                 cursor.execute(command)
 
+    def add(self, facts):
+        """add facts"""
+        records = []
+        for entity, attribute, value in facts:
+            value_type = get_type_str(value)
+            if value_type in valid_types:
+                records.append((entity, attribute, value_type, value))
+            else:
+                msg = 'unsupported type <type %s> in value %r'
+                raise Exception(msg % (value_type, value))
+
+        with self.connection:
+            cursor = self.connection.cursor()
+            cursor.executemany(insert, records)
+
     def put(self, entity):
         """stores an entity"""
 
@@ -34,10 +59,6 @@ class Sqlite3Store(AbstractStore):
         values = [entity[k] for k in keys]
         value_types = [get_type_str(v) for v in values]
         values = [fixval(i) for i in values]  # same fix as above
-        valid_types = [
-            'str', 'bytes', 'int', 'float', 'decimal.Decimal',
-            'datetime.date', 'datetime.datetime', 'bool', 'NoneType',
-        ]
 
         for n, atype in enumerate(value_types):
             if atype not in valid_types:
@@ -48,11 +69,6 @@ class Sqlite3Store(AbstractStore):
 
         n = len(keys)
         param_list = list(zip([uid]*n, keys, value_types, values))
-        insert = (
-            'insert into facts ('
-            '    entity, attribute, value_type, value'
-            ') values (?, ?, ?, ?)'
-        )
         with self.connection:
             cursor = self.connection.cursor()
             cursor.executemany(insert, param_list)
