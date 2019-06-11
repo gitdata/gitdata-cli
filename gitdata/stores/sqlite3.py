@@ -5,7 +5,7 @@
 import sqlite3
 
 import gitdata
-from .common import fixval, get_type_str, AbstractStore, get_uid, entify
+from .common import fixval, get_type_str, AbstractStore, get_uid, entify, retype
 
 valid_types = [
     'str', 'bytes', 'int', 'float', 'decimal.Decimal',
@@ -17,6 +17,15 @@ insert = (
     '    entity, attribute, value_type, value'
     ') values (?, ?, ?, ?)'
 )
+
+
+def get_db(connection):
+    def query(cmd, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute(cmd, *args, **kwargs)
+        return cursor.fetchall()
+    return query
+
 
 class Sqlite3Store(AbstractStore):
     """Sqlite3 based Entity Store"""
@@ -51,6 +60,71 @@ class Sqlite3Store(AbstractStore):
         with self.connection:
             cursor = self.connection.cursor()
             cursor.executemany(insert, records)
+
+    def triples(self, pattern):
+        """Return triples matching pattern"""
+
+        sub, pred, obj = pattern
+
+        spn = 'select value, value_type from facts where entity=? and attribute=?'
+        sno = 'select attribute from facts where entity=? and value=?'
+        snn = 'select attribute, value, value_type from facts where entity=?'
+        npo = 'select entity from facts where attribute=? and value=?'
+        npn = 'select entity, value, value_type from facts where attribute=?'
+        nno = 'select entity, attribute from facts where value=?'
+        nnn = 'select entity, attribute, value, value_type from facts'
+
+        with self.connection:
+            cursor = self.connection.cursor()
+            db = cursor.execute
+
+            db = get_db(self.connection)
+            if sub != None:
+                if pred != None:
+                    q = [retype(*a) for a in db(spn, (sub, pred))]
+                    # subj pred obj
+                    if obj != None:
+                        if obj in q:
+                            yield (sub, pred, obj)
+                    # subj pred None
+                    else:
+                        for r in q:
+                            yield (sub, pred, r)
+                else:
+                    # subj None obj
+                    if obj != None:
+                        q = [a[0] for a in db(sno, (sub, obj))]
+                        for r in q:
+                            yield (sub, r, obj)
+                    # sub None None
+                    else:
+                        q = db(snn, (sub,))
+                        for r, value, value_type in q:
+                            yield (sub, r, retype(value, value_type))
+            else:
+                if pred != None:
+                    # None pred obj
+                    if obj != None:
+                        q = db(npo, (pred, obj))
+                        for s, in q:
+                            yield (int(s), pred, obj)
+                    # None pred None
+                    else:
+                        q = db(npn, (pred,))
+                        for r, value, value_type in q:
+                            yield (int(r), pred, retype(value, value_type))
+                else:
+                    # None None obj
+                    if obj != None:
+                        q = [(row_id, attribute) for row_id, attribute in db(nno, (obj,))]
+                        for r, s in q:
+                            yield (int(r), s, obj)
+                    # None None None
+                    else:
+                        # q = [(row_id, attribute, value, value_type) for row_id, attribute, value in db(nnn)]
+                        q = db(nnn)
+                        for r, s, value, value_type in q:
+                            yield (int(r), s, retype(value, value_type))
 
     def put(self, entity):
         """stores an entity"""
