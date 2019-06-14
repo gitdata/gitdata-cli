@@ -13,9 +13,9 @@ class Digester(object):
     known = []
 
     def __init__(self, data=None, new_uid=gitdata.utils.new_uid):
+        self.new_uid = new_uid
         if data:
             self.digest(data)
-        self.new_uid = new_uid
 
     def digest(self, data):
         """digest some data"""
