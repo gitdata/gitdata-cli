@@ -13,6 +13,7 @@ class Digester(object):
     known = []
 
     def __init__(self, data=None, new_uid=gitdata.utils.new_uid):
+        self.known = []
         self.new_uid = new_uid
         if data:
             self.digest(data)
