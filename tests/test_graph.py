@@ -9,6 +9,7 @@ from decimal import Decimal
 import unittest
 
 import gitdata
+from gitdata.utils import new_test_uid
 
 
 class GraphTests(unittest.TestCase):
@@ -47,7 +48,7 @@ class GraphTests(unittest.TestCase):
 
     def setUp(self):
         store = gitdata.stores.memory.MemoryStore()
-        self.graph = gitdata.Graph(store)
+        self.graph = gitdata.Graph(store, new_uid=new_test_uid(0))
         self.graph.store.clear()
 
     def test_set(self):

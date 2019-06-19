@@ -3,7 +3,6 @@
 """
 
 import gitdata
-from gitdata.utils import new_test_uid
 import gitdata.digester
 
 
@@ -39,9 +38,9 @@ class Node(object):
 class Graph(object):
     """Basic Graph"""
 
-    def __init__(self, store):
+    def __init__(self, store, new_uid=gitdata.utils.new_uid):
         self.store = store
-        self.digester = gitdata.digester.Digester(new_uid=new_test_uid(0))
+        self.digester = gitdata.digester.Digester(new_uid=new_uid)
 
     def set(self, value):
         """set one or more entity values"""
