@@ -58,18 +58,169 @@ class GraphTests(unittest.TestCase):
         g.set([1, 'x', Decimal('2.22')])
         g.set([dict(name='Joe', age=20), dict(name='Pat', age=24)])
 
+    def test_empty_graph(self):
+        g = self.graph
+        self.assertEqual(g.triples(), [])
+
     def test_add(self):
         g = self.graph
         g.add([dict(name='Joe', age=20), dict(name='Pat', wage=Decimal('12.1'))])
         person = g.get(3)
         self.assertEqual(person['wage'], Decimal('12.1'))
 
-    # def test_query(self):
-    #     g = self.graph
-    #     g.add(self.data)
-    #     answer = g.query([('?uid', 'name', '?name')])
-    #     print(answer)
-    #     self.assertEqual(answer, None)
+    def test_add_none(self):
+        g = self.graph
+        g.add(None)
+        self.assertEqual(g.triples(), [])
+        # self.assertEqual(person['wage'], Decimal('12.1'))
+
+    def test_add_value(self):
+        g = self.graph
+        g.add('test')
+        self.assertEqual(g.triples(), [])
+
+    def test_add_dict(self):
+        g = self.graph
+        g.add(dict(value=2))
+        self.assertEqual(g.triples(), [(1, 'value', 2)])
+
+    def test_add_list(self):
+        g = self.graph
+        g.add([1, 2, 3])
+        self.assertEqual(g.triples(), [
+            (1, 'includes', 1),
+            (1, 'includes', 2),
+            (1, 'includes', 3)
+        ])
+
+    def test_add_project(self):
+        g = self.graph
+        project_attributes = dict(
+            name='Sample',
+            kind='project',
+            created=datetime.datetime(2019, 6, 10),
+            created_by=1,
+        )
+        g.add(project_attributes)
+        self.assertEqual(g.triples(), [
+            (1, 'name', 'Sample'),
+            (1, 'kind', 'project'),
+            (1, 'created', datetime.datetime(2019, 6, 10)),
+            (1, 'created_by', 1)
+        ])
+
+    def test_add_project_attribute(self):
+        g = self.graph
+        project_attributes = dict(
+            name='Sample',
+            kind='project',
+            created=datetime.datetime(2019, 6, 10),
+            created_by=1,
+        )
+        g.add(project_attributes)
+        node = g.first(name='Sample')
+        self.assertEqual(node['kind'], 'project')
+
+        node.add('status', 'draft')
+        self.assertEqual(g.triples(), [
+            (1, 'name', 'Sample'),
+            (1, 'kind', 'project'),
+            (1, 'created', datetime.datetime(2019, 6, 10)),
+            (1, 'created_by', 1),
+            (1, 'status', 'draft'),
+        ])
+
+    def test_add_project_attribute_as_list(self):
+        g = self.graph
+        project_attributes = dict(
+            name='Sample',
+            kind='project',
+            created=datetime.datetime(2019, 6, 10),
+            created_by=1,
+        )
+        g.add(project_attributes)
+        node = g.first(name='Sample')
+
+        node.add('cities', ['Vancouver', 'Victoria'])
+        self.assertEqual(g.triples(), [
+            (1, 'name', 'Sample'),
+            (1, 'kind', 'project'),
+            (1, 'created', datetime.datetime(2019, 6, 10)),
+            (1, 'created_by', 1),
+            (2, 'includes', 'Vancouver'),
+            (2, 'includes', 'Victoria'),
+            (1, 'cities', 2),
+        ])
+
+    def test_add_project_attribute_as_list_of_objects(self):
+        g = self.graph
+        project_attributes = dict(
+            name='Sample',
+            kind='project',
+            created=datetime.datetime(2019, 6, 10),
+            created_by=1,
+        )
+        g.add(project_attributes)
+        node = g.first(name='Sample')
+
+        uid = g.add([
+            dict(name='Vancouver'),
+            dict(name='Victoria'),
+        ])
+
+        attribute = (node.uid, 'cities', uid)
+        g.store.add([attribute])
+        self.assertEqual(g.triples(), [
+            (1, 'name', 'Sample'),
+            (1, 'kind', 'project'),
+            (1, 'created', datetime.datetime(2019, 6, 10)),
+            (1, 'created_by', 1),
+            (3, 'name', 'Vancouver'),
+            (2, 'includes', 3),
+            (4, 'name', 'Victoria'),
+            (2, 'includes', 4),
+            (1, 'cities', 2),
+        ])
+
+    def test_add_list_of_objects_to_node(self):
+        g = self.graph
+        project_attributes = dict(
+            name='Sample',
+            kind='project',
+            created=datetime.datetime(2019, 6, 10),
+            created_by=1,
+        )
+        g.add(project_attributes)
+        node = g.first(name='Sample')
+
+        node.add('cities', [
+            dict(name='Vancouver'),
+            dict(name='Victoria'),
+        ])
+
+        self.assertEqual(g.triples(), [
+            (1, 'name', 'Sample'),
+            (1, 'kind', 'project'),
+            (1, 'created', datetime.datetime(2019, 6, 10)),
+            (1, 'created_by', 1),
+            (3, 'name', 'Vancouver'),
+            (2, 'includes', 3),
+            (4, 'name', 'Victoria'),
+            (2, 'includes', 4),
+            (1, 'cities', 2),
+        ])
+
+    def test_query(self):
+        g = self.graph
+        g.add(self.data)
+        answer = g.query([
+            ('?uid', 'name', '?name'),
+            ('?uid', 'kind', 'user'),
+        ])
+        self.assertEqual(answer, [
+            {'uid': 4, 'name': 'Joe'},
+            {'uid': 5, 'name': 'Sally'}
+        ])
 
     def test_find(self):
         g = self.graph

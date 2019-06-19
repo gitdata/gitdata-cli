@@ -16,10 +16,8 @@ class Node(object):
 
     def add(self, relation, data):
         """Add a related data to a node"""
-        data = self.graph.digester.digest(data)
         uid = self.graph.add(data)
-        self.graph.add([(self.uid, relation, data)])
-        return Node(self.graph, uid)
+        self.graph.store.add([(self.uid, relation, uid)])
 
     def __getitem__(self, name):
         values = self.graph.triples((self.uid, name, None))
@@ -56,14 +54,16 @@ class Graph(object):
 
     def add(self, data):
         """Add arbitrary data to the graph"""
-        root = self.digester.digest(data)
-        return self.store.add(self.digester.known)
+        self.digester.store = []
+        uid = self.digester.digest(data)
+        self.store.add(self.digester.known)
+        return uid
 
     def get(self, uid):
         """Get a node of the graph"""
         return Node(self, uid)
 
-    def triples(self, pattern):
+    def triples(self, pattern=(None, None, None)):
         """Find graph triples that match a pattern"""
         return self.store.triples(pattern)
 
@@ -133,3 +133,7 @@ class Graph(object):
         result = self.find(*args, **kwargs)
         if result:
             return result[0]
+
+    def __str__(self):
+        """Human friendly string representation"""
+        return '\n'.join(repr(triple) for triple in self.triples())
