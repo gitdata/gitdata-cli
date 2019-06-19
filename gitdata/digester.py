@@ -10,36 +10,36 @@ import gitdata
 class Digester(object):
     """Digest arbitrary data structures into triples"""
 
-    known = []
-
     def __init__(self, data=None, new_uid=gitdata.utils.new_uid):
         self.known = []
         self.new_uid = new_uid
         if data:
             self.digest(data)
 
-    def digest(self, data):
+    def _digest(self, known, data):
         """digest some data"""
-        known = self.known
 
         if isinstance(data, dict):
             s = self.new_uid()
             for p, o in data.items():
-                known.append((s, p, self.digest(o)))
+                known.append((s, p, self._digest(known, o)))
             return s
 
         elif isinstance(data, (list, tuple, set)):
             s = self.new_uid()
             for item in data:
-                known.append((s, 'includes', self.digest(item)))
+                known.append((s, 'includes', self._digest(known, item)))
             return s
 
         else:
             return data
 
-    # def __str__(self):
-    #     labels = 'Subject', 'Predicate', 'Object'
-    #     return str(zoom.utils.ItemList(self.known, labels=labels))
+    def digest(self, data):
+        """digest some data"""
+        known = []
+        uid = self._digest(known, data)
+        self.known = known
+        return uid
 
 
 def digested(data):
