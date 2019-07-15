@@ -136,3 +136,6 @@ class Graph(object):
     def __str__(self):
         """Human friendly string representation"""
         return '\n'.join(repr(triple) for triple in self.triples())
+
+    def __len__(self):
+        return len(self.store)

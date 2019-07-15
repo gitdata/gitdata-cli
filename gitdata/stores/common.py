@@ -160,3 +160,7 @@ class AbstractStore(object):
 
     def clear(self):
         """clear the entity store"""
+
+    def __len__(self):
+        """return the number of facts stored"""
+        return 0

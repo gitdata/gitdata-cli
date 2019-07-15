@@ -178,3 +178,8 @@ class EntityStoreSuite(object):
                 (1, 'includes', 3),
             ],
         )
+
+    def test_len(self):
+        store = self.store
+        store.add(self.triples)
+        self.assertEqual(len(store), 6)

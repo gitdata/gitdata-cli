@@ -247,3 +247,8 @@ class GraphTests(unittest.TestCase):
         g.add(self.data)
         answer = g.first(kind='animal')
         self.assertEqual(answer, None)
+
+    def test_len(self):
+        g = self.graph
+        g.add(self.data)
+        self.assertEqual(len(g), 20)

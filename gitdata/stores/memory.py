@@ -56,3 +56,7 @@ class MemoryStore(common.AbstractStore):
             )
         ]
         return data
+
+    def __len__(self):
+        """return the number of facts stored"""
+        return len(self.facts)

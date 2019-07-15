@@ -170,3 +170,10 @@ class Sqlite3Store(AbstractStore):
         select = 'delete from facts'
         cursor = self.connection.cursor()
         cursor.execute(select)
+
+    def __len__(self):
+        """return the number of facts stored"""
+        cursor = self.connection.cursor()
+        cursor.execute('select count(*) from facts')
+        result = list(cursor.fetchall())[0][0]
+        return result
