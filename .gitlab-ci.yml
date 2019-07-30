@@ -30,4 +30,4 @@ deploy_prod:
     - BASE_URL=`echo $CI_REPOSITORY_URL | sed "s;\/*$CI_PROJECT_PATH.*;;"`
     - which git || ( apt-get update -y && apt-get -qq install git )
     - git clone "$BASE_URL/dsilabs/deploy-lib.git" /tmp/deploy
-    - source /tmp/deploy/run.sh gitdata.com
+    - DEPLOY_HOST=gitdata.com source /tmp/deploy/run.sh
