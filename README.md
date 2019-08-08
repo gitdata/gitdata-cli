@@ -61,7 +61,7 @@ command.
 
 
 #### Fetch
-The gitdata fetch command copes facts from a somewhere else into your gitdata
+The gitdata fetch command copies facts from a somewhere else into your gitdata
 repository.  The location being fetched from can be a remote or can be anywhere
 else you can get to from your computer.   The facts fetched will be placed into
 a temporary holding area that will allow you to work with them without committing
@@ -76,3 +76,4 @@ into facts ready for you to work with alongside any other data in your repositor
 If you decide you want to keep the facts as part of your data repository then you
 can use the `gitdata add` and `gitdata commit` commands to add them to your data
 repository.
+
