@@ -5,7 +5,8 @@
 import sqlite3
 
 import gitdata
-from .common import fixval, get_type_str, AbstractStore, get_uid, entify, retype
+from .common import fixval, get_type_str, AbstractStore, entify, retype
+from gitdata.utils import new_uid
 
 valid_types = [
     'str', 'bytes', 'int', 'float', 'decimal.Decimal',
@@ -139,7 +140,7 @@ class Sqlite3Store(AbstractStore):
                 msg = 'unsupported type <type %s> in value %r'
                 raise Exception(msg % (atype, keys[n]))
 
-        uid = entity.get('uid', get_uid())
+        uid = entity.get('uid', new_uid())
 
         n = len(keys)
         param_list = list(zip([uid]*n, keys, value_types, values))

@@ -11,10 +11,6 @@ import uuid
 
 import gitdata
 
-def get_uid():
-    """Get a unique id"""
-    return uuid.uuid4().hex
-
 
 def retype(value, value_type):
     """Convert a value back to its original type"""

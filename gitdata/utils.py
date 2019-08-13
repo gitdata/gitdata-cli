@@ -9,7 +9,7 @@ import platform
 
 def new_uid():
     """returns a unique id"""
-    return uuid.uuid4().int
+    return uuid.uuid4().hex
 
 
 def new_test_uid(start=0):
