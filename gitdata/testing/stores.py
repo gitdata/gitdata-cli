@@ -17,19 +17,19 @@ class EntityStoreSuite(object):
     ]
 
     triples = [
-        (2, 'name', 'Joe'),
-        (2, 'age', 12),
-        (1, 'includes', 2),
-        (3, 'name', 'Sally'),
-        (3, 'wage', 22.1),
-        (1, 'includes', 3),
+        ('2', 'name', 'Joe'),
+        ('2', 'age', 12),
+        ('1', 'includes', '2'),
+        ('3', 'name', 'Sally'),
+        ('3', 'wage', 22.1),
+        ('1', 'includes', '3'),
     ]
 
     def test_add(self):
         joe = self.store.get(1)
         self.assertEqual(joe, None)
         self.store.add(self.triples)
-        joe = self.store.get(2)
+        joe = self.store.get('2')
         self.assertEqual(joe['name'], 'Joe')
 
     def test_put(self):
@@ -98,17 +98,17 @@ class EntityStoreSuite(object):
         store = self.store
         store.add(self.triples)
         self.assertEqual(
-            list(self.store.triples((2, 'name', 'Joe'))),
-            [(2, 'name', 'Joe')],
+            list(self.store.triples(('2', 'name', 'Joe'))),
+            [('2', 'name', 'Joe')],
         )
 
     def test_spn(self):
         store = self.store
         store.add(self.triples)
         self.assertEqual(
-            list(self.store.triples((3, 'name', None))),
+            list(self.store.triples(('3', 'name', None))),
             [
-                (3, 'name', 'Sally')
+                ('3', 'name', 'Sally')
             ],
         )
 
@@ -116,9 +116,9 @@ class EntityStoreSuite(object):
         store = self.store
         store.add(self.triples)
         self.assertEqual(
-            list(self.store.triples((2, None, 'Joe'))),
+            list(self.store.triples(('2', None, 'Joe'))),
             [
-                (2, 'name', 'Joe')
+                ('2', 'name', 'Joe')
             ],
         )
 
@@ -126,10 +126,10 @@ class EntityStoreSuite(object):
         store = self.store
         store.add(self.triples)
         self.assertEqual(
-            list(self.store.triples((3, None, None))),
+            list(self.store.triples(('3', None, None))),
             [
-                (3, 'name', 'Sally'),
-                (3, 'wage', 22.1),
+                ('3', 'name', 'Sally'),
+                ('3', 'wage', 22.1),
             ],
         )
 
@@ -139,7 +139,7 @@ class EntityStoreSuite(object):
         self.assertEqual(
             list(self.store.triples((None, 'name', 'Sally'))),
             [
-                (3, 'name', 'Sally'),
+                ('3', 'name', 'Sally'),
             ],
         )
 
@@ -149,8 +149,8 @@ class EntityStoreSuite(object):
         self.assertEqual(
             list(self.store.triples((None, 'name', None))),
             [
-                (2, 'name', 'Joe'),
-                (3, 'name', 'Sally'),
+                ('2', 'name', 'Joe'),
+                ('3', 'name', 'Sally'),
             ],
         )
 
@@ -160,7 +160,7 @@ class EntityStoreSuite(object):
         self.assertEqual(
             list(self.store.triples((None, None, 12))),
             [
-                (2, 'age', 12),
+                ('2', 'age', 12),
             ],
         )
 
@@ -170,12 +170,12 @@ class EntityStoreSuite(object):
         self.assertEqual(
             list(self.store.triples((None, None, None))),
             [
-                (2, 'name', 'Joe'),
-                (2, 'age', 12),
-                (1, 'includes', 2),
-                (3, 'name', 'Sally'),
-                (3, 'wage', 22.1),
-                (1, 'includes', 3),
+                ('2', 'name', 'Joe'),
+                ('2', 'age', 12),
+                ('1', 'includes', '2'),
+                ('3', 'name', 'Sally'),
+                ('3', 'wage', 22.1),
+                ('1', 'includes', '3'),
             ],
         )
 

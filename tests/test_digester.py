@@ -16,25 +16,25 @@ class TestDigester(unittest.TestCase):
 
     def test_dict(self):
         uid = self.digester.digest(dict(name='Joe', age=12))
-        self.assertEqual(uid, 1)
+        self.assertEqual(uid, '1')
         self.assertEqual(
             self.digester.known,
-            [(1, 'name', 'Joe'), (1, 'age', 12)],
+            [('1', 'name', 'Joe'), ('1', 'age', 12)],
         )
 
     def test_list_of_dict(self):
         uid = self.digester.digest([dict(name='Joe', age=12), dict(name='Sally')])
-        self.assertEqual(uid, 1)
+        self.assertEqual(uid, '1')
 
         print(self.digester.known)
         self.assertEqual(
             self.digester.known,
             [
-                (2, 'name', 'Joe'),
-                (2, 'age', 12),
-                (1, 'includes', 2),
-                (3, 'name', 'Sally'),
-                (1, 'includes', 3),
+                ('2', 'name', 'Joe'),
+                ('2', 'age', 12),
+                ('1', 'includes', '2'),
+                ('3', 'name', 'Sally'),
+                ('1', 'includes', '3'),
             ],
         )
 
@@ -48,13 +48,13 @@ class TestDigester(unittest.TestCase):
 
     def test_list_of_values(self):
         uid = self.digester.digest(['one', 2, 'three'])
-        self.assertEqual(uid, 1)
+        self.assertEqual(uid, '1')
         self.assertEqual(
             self.digester.known,
             [
-                (1, 'includes', 'one'),
-                (1, 'includes', 2),
-                (1, 'includes', 'three')
+                ('1', 'includes', 'one'),
+                ('1', 'includes', 2),
+                ('1', 'includes', 'three')
             ],
         )
 
@@ -65,11 +65,11 @@ class TestDigester(unittest.TestCase):
         self.assertEqual(
             self.digester.known,
             [
-                (1, 'name', 'Joe'),
-                (1, 'age', 12),
-                (2, 'name', 'Adam'),
-                (2, 'age', 12),
-                (1, 'friend', 2)
+                ('1', 'name', 'Joe'),
+                ('1', 'age', 12),
+                ('2', 'name', 'Adam'),
+                ('2', 'age', 12),
+                ('1', 'friend', '2')
             ]
         )
 
@@ -87,14 +87,14 @@ class TestDigester(unittest.TestCase):
         self.assertEqual(
             self.digester.known,
             [
-                (1, 'name', 'Joe'),
-                (1, 'age', 12),
-                (3, 'name', 'Adam'),
-                (3, 'age', 12),
-                (2, 'includes', 3),
-                (4, 'name', 'Jim'),
-                (4, 'age', 22),
-                (2, 'includes', 4),
-                (1, 'friend', 2)
+                ('1', 'name', 'Joe'),
+                ('1', 'age', 12),
+                ('3', 'name', 'Adam'),
+                ('3', 'age', 12),
+                ('2', 'includes', '3'),
+                ('4', 'name', 'Jim'),
+                ('4', 'age', 22),
+                ('2', 'includes', '4'),
+                ('1', 'friend', '2')
             ]
         )

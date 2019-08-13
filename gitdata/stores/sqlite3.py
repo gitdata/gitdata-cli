@@ -108,24 +108,24 @@ class Sqlite3Store(AbstractStore):
                     if obj != None:
                         q = db(npo, (pred, obj))
                         for s, in q:
-                            yield (int(s), pred, obj)
+                            yield (s, pred, obj)
                     # None pred None
                     else:
                         q = db(npn, (pred,))
                         for r, value, value_type in q:
-                            yield (int(r), pred, retype(value, value_type))
+                            yield (r, pred, retype(value, value_type))
                 else:
                     # None None obj
                     if obj != None:
                         q = [(row_id, attribute) for row_id, attribute in db(nno, (obj,))]
                         for r, s in q:
-                            yield (int(r), s, obj)
+                            yield (r, s, obj)
                     # None None None
                     else:
                         # q = [(row_id, attribute, value, value_type) for row_id, attribute, value in db(nnn)]
                         q = db(nnn)
                         for r, s, value, value_type in q:
-                            yield (int(r), s, retype(value, value_type))
+                            yield (r, s, retype(value, value_type))
 
     def put(self, entity):
         """stores an entity"""

@@ -16,13 +16,13 @@ def new_test_uid(start=0):
     """a simple id generator for testing
 
     Returns a simple id generator that with a given integer
-    and increments by one ech time its called which allows
+    and increments by one each time its called which allows
     predictable uid values for testing.
     """
     n = [start]
     def _new_id():
         n[0] += 1
-        return n[0]
+        return str(n[0])
     return _new_id
 
 

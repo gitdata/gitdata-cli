@@ -66,7 +66,7 @@ class GraphTests(unittest.TestCase):
     def test_add(self):
         g = self.graph
         g.add([dict(name='Joe', age=20), dict(name='Pat', wage=Decimal('12.1'))])
-        person = g.get(3)
+        person = g.get('3')
         self.assertEqual(person['wage'], Decimal('12.1'))
 
     def test_add_none(self):
@@ -83,15 +83,15 @@ class GraphTests(unittest.TestCase):
     def test_add_dict(self):
         g = self.graph
         g.add(dict(value=2))
-        self.assertEqual(g.triples(), [(1, 'value', 2)])
+        self.assertEqual(g.triples(), [('1', 'value', 2)])
 
     def test_add_list(self):
         g = self.graph
         g.add([1, 2, 3])
         self.assertEqual(g.triples(), [
-            (1, 'includes', 1),
-            (1, 'includes', 2),
-            (1, 'includes', 3)
+            ('1', 'includes', 1),
+            ('1', 'includes', 2),
+            ('1', 'includes', 3)
         ])
 
     def test_add_project(self):
@@ -104,10 +104,10 @@ class GraphTests(unittest.TestCase):
         )
         g.add(project_attributes)
         self.assertEqual(g.triples(), [
-            (1, 'name', 'Sample'),
-            (1, 'kind', 'project'),
-            (1, 'created', datetime.datetime(2019, 6, 10)),
-            (1, 'created_by', 1)
+            ('1', 'name', 'Sample'),
+            ('1', 'kind', 'project'),
+            ('1', 'created', datetime.datetime(2019, 6, 10)),
+            ('1', 'created_by', 1)
         ])
 
     def test_add_project_attribute(self):
@@ -124,11 +124,11 @@ class GraphTests(unittest.TestCase):
 
         node.add('status', 'draft')
         self.assertEqual(g.triples(), [
-            (1, 'name', 'Sample'),
-            (1, 'kind', 'project'),
-            (1, 'created', datetime.datetime(2019, 6, 10)),
-            (1, 'created_by', 1),
-            (1, 'status', 'draft'),
+            ('1', 'name', 'Sample'),
+            ('1', 'kind', 'project'),
+            ('1', 'created', datetime.datetime(2019, 6, 10)),
+            ('1', 'created_by', 1),
+            ('1', 'status', 'draft'),
         ])
 
     def test_add_project_attribute_as_list(self):
@@ -144,13 +144,13 @@ class GraphTests(unittest.TestCase):
 
         node.add('cities', ['Vancouver', 'Victoria'])
         self.assertEqual(g.triples(), [
-            (1, 'name', 'Sample'),
-            (1, 'kind', 'project'),
-            (1, 'created', datetime.datetime(2019, 6, 10)),
-            (1, 'created_by', 1),
-            (2, 'includes', 'Vancouver'),
-            (2, 'includes', 'Victoria'),
-            (1, 'cities', 2),
+            ('1', 'name', 'Sample'),
+            ('1', 'kind', 'project'),
+            ('1', 'created', datetime.datetime(2019, 6, 10)),
+            ('1', 'created_by', 1),
+            ('2', 'includes', 'Vancouver'),
+            ('2', 'includes', 'Victoria'),
+            ('1', 'cities', '2'),
         ])
 
     def test_add_project_attribute_as_list_of_objects(self):
@@ -172,15 +172,15 @@ class GraphTests(unittest.TestCase):
         attribute = (node.uid, 'cities', uid)
         g.store.add([attribute])
         self.assertEqual(g.triples(), [
-            (1, 'name', 'Sample'),
-            (1, 'kind', 'project'),
-            (1, 'created', datetime.datetime(2019, 6, 10)),
-            (1, 'created_by', 1),
-            (3, 'name', 'Vancouver'),
-            (2, 'includes', 3),
-            (4, 'name', 'Victoria'),
-            (2, 'includes', 4),
-            (1, 'cities', 2),
+            ('1', 'name', 'Sample'),
+            ('1', 'kind', 'project'),
+            ('1', 'created', datetime.datetime(2019, 6, 10)),
+            ('1', 'created_by', 1),
+            ('3', 'name', 'Vancouver'),
+            ('2', 'includes', '3'),
+            ('4', 'name', 'Victoria'),
+            ('2', 'includes', '4'),
+            ('1', 'cities', '2'),
         ])
 
     def test_add_list_of_objects_to_node(self):
@@ -200,15 +200,15 @@ class GraphTests(unittest.TestCase):
         ])
 
         self.assertEqual(g.triples(), [
-            (1, 'name', 'Sample'),
-            (1, 'kind', 'project'),
-            (1, 'created', datetime.datetime(2019, 6, 10)),
-            (1, 'created_by', 1),
-            (3, 'name', 'Vancouver'),
-            (2, 'includes', 3),
-            (4, 'name', 'Victoria'),
-            (2, 'includes', 4),
-            (1, 'cities', 2),
+            ('1', 'name', 'Sample'),
+            ('1', 'kind', 'project'),
+            ('1', 'created', datetime.datetime(2019, 6, 10)),
+            ('1', 'created_by', 1),
+            ('3', 'name', 'Vancouver'),
+            ('2', 'includes', '3'),
+            ('4', 'name', 'Victoria'),
+            ('2', 'includes', '4'),
+            ('1', 'cities', '2'),
         ])
 
     def test_query(self):
@@ -219,8 +219,8 @@ class GraphTests(unittest.TestCase):
             ('?uid', 'kind', 'user'),
         ])
         self.assertEqual(answer, [
-            {'uid': 4, 'name': 'Joe'},
-            {'uid': 5, 'name': 'Sally'}
+            {'uid': '4', 'name': 'Joe'},
+            {'uid': '5', 'name': 'Sally'}
         ])
 
     def test_find(self):
