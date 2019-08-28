@@ -17,6 +17,7 @@ class Node(object):
         """Add a related data to a node"""
         uid = self.graph.add(data)
         self.graph.store.add([(self.uid, relation, uid)])
+        return uid
 
     def __getitem__(self, name):
         values = self.graph.triples((self.uid, name, None))
