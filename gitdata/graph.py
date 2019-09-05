@@ -25,15 +25,29 @@ class Node(object):
 
     def __str__(self):
         pattern = (self.uid, None, None)
+
+        name = '{}({})'.format(
+            self.__class__.__name__,
+            self.uid
+        )
+        t = []
+
+        for _, key, value in self.graph.triples(pattern):
+            t.append('  {} {}: {!r}'.format(
+                key,
+                '.'*(20-len(key[:20])),
+                value
+            ))
+        return '\n'.join([name] + t)
+
+    def __repr__(self):
+        pattern = (self.uid, None, None)
         return 'Node({})'.format(
             ', '.join(
                 '{}: {!r}'.format(*rec[1:])
                 for rec in self.graph.triples(pattern)
             )
         )
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Graph(object):
