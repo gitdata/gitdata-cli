@@ -73,6 +73,12 @@ class Graph(object):
         self.store.add(self.digester.known)
         return uid
 
+    def delete(self, pattern):
+        """Delete all triples matching the pattern"""
+        facts = self.triples(pattern)
+        self.store.remove(facts)
+        return 1
+
     def get(self, uid):
         """Get a node of the graph"""
         return Node(self, uid)

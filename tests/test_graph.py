@@ -248,6 +248,27 @@ class GraphTests(unittest.TestCase):
         answer = g.first(kind='animal')
         self.assertEqual(answer, None)
 
+    def test_delete(self):
+        g = self.graph
+        g.add(self.data)
+
+        self.assertEqual(g.query([
+            ('?uid', 'name', '?name'),
+            ('?uid', 'kind', 'user'),
+        ]), [
+            {'uid': '4', 'name': 'Joe'},
+            {'uid': '5', 'name': 'Sally'}
+        ])
+
+        g.delete((None, 'name', 'Joe'))
+
+        self.assertEqual(g.query([
+            ('?uid', 'name', '?name'),
+            ('?uid', 'kind', 'user'),
+        ]), [
+            {'uid': '5', 'name': 'Sally'}
+        ])
+
     def test_len(self):
         g = self.graph
         g.add(self.data)
