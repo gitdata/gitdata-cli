@@ -21,7 +21,6 @@ class MemoryStore(common.AbstractStore):
     def remove(self, facts):
         for fact in facts:
             if fact in self.facts:
-                print('removing', fact)
                 self.facts.remove(fact)
 
     def put(self, entity):
