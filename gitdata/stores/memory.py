@@ -18,6 +18,12 @@ class MemoryStore(common.AbstractStore):
     def add(self, facts):
         self.facts.extend(facts)
 
+    def remove(self, facts):
+        for fact in facts:
+            if fact in self.facts:
+                print('removing', fact)
+                self.facts.remove(fact)
+
     def put(self, entity):
         """put assertions into the entity store"""
         uid = entity.get('uid', uuid.uuid4().hex)

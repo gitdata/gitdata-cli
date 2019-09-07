@@ -26,11 +26,21 @@ class EntityStoreSuite(object):
     ]
 
     def test_add(self):
-        joe = self.store.get(1)
+        joe = self.store.get('2')
         self.assertEqual(joe, None)
         self.store.add(self.triples)
         joe = self.store.get('2')
         self.assertEqual(joe['name'], 'Joe')
+
+    def test_remove(self):
+        joe = self.store.get('2')
+        self.assertEqual(joe, None)
+        self.store.add(self.triples)
+        joe = self.store.get('2')
+        self.assertEqual(joe['name'], 'Joe')
+        self.store.remove([('2', 'name', 'Joe')])
+        joe = self.store.get('2')
+        self.assertEqual(joe.get('name'), None)
 
     def test_put(self):
         ids = []

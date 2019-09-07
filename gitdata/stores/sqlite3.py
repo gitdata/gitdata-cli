@@ -19,6 +19,11 @@ insert = (
     ') values (?, ?, ?, ?)'
 )
 
+delete = (
+    'delete from facts where '
+    '    entity=? and attribute=? and value=?'
+)
+
 
 def get_db(connection):
     def query(cmd, *args, **kwargs):
@@ -61,6 +66,13 @@ class Sqlite3Store(AbstractStore):
         with self.connection:
             cursor = self.connection.cursor()
             cursor.executemany(insert, records)
+
+    def remove(self, facts):
+        """remove facts"""
+        records = facts
+        with self.connection:
+            cursor = self.connection.cursor()
+            cursor.executemany(delete, records)
 
     def triples(self, pattern):
         """Return triples matching pattern"""
