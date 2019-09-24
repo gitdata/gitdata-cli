@@ -46,19 +46,6 @@ options:
     -v, --verbose   verbose output
 """
 
-def initialize(location):
-    """Initialize a gitdata repository in a location on the disk"""
-    logger = logging.getLogger(__name__)
-    logger.debug('initializing')
-    pathname = os.path.join(location, '.gitdata')
-    if not os.path.exists(pathname):
-        connection = sqlite3.Connection(pathname)
-        setup_repository(connection)
-        print('Initialized empty GitData repository in', pathname)
-    else:
-        print('GitData respository already initialized in', pathname)
-
-
 def setup_repository(connection):
     """Setup the sqlite3 repsoitory database"""
     filename = gitdata.utils.lib_path('sql/create_repository_sqlite3.sql')
@@ -175,23 +162,42 @@ class Repository(object):
     """GitData Repository"""
 
     def __init__(self, location=None):
-        location = location if location is not None else os.getcwd()
-        pathname = os.path.join(location, '.gitdata')
         self.connection = None
         self.cursor = None
-        if os.path.exists(pathname):
-            self.connection = sqlite3.Connection(pathname)
-        else:
-            msg = 'fatal: not a GitData repository'
-            logger = logging.getLogger(__name__)
-            logger.error(msg)
-            logger.debug('pathname is %r', pathname)
-            raise Exception(msg)
+        self.location = location
 
     def open(self):
         """Open the repository"""
+        location = self.location
+        if location == ':memory:':
+            self.connection = sqlite3.Connection(location)
+            setup_repository(self.connection)
+        else:
+            location = location if location is not None else os.getcwd()
+            pathname = os.path.join(location, '.gitdata')
+            if os.path.exists(pathname):
+                self.connection = sqlite3.Connection(pathname)
+            else:
+                msg = 'fatal: not a GitData repository'
+                logger = logging.getLogger(__name__)
+                logger.error(msg)
+                logger.debug('pathname is %r', pathname)
+                raise Exception(msg)
         self.cursor = self.connection.cursor()
         return self.cursor
+
+    def initialize(self, location):
+        """Initialize a repository"""
+        if location != ':memory:':
+            logger = logging.getLogger(__name__)
+            logger.debug('initializing')
+            pathname = os.path.join(location, '.gitdata')
+            if not os.path.exists(pathname):
+                connection = sqlite3.Connection(pathname)
+                setup_repository(connection)
+                print('Initialized empty GitData repository in', pathname)
+            else:
+                print('GitData respository already initialized in', pathname)
 
     def close(self):
         """Close the repository"""
