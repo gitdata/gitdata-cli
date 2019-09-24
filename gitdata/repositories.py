@@ -36,6 +36,16 @@ options:
     -v, --verbose   verbose output
 """
 
+SHOW_HELP = """
+Show facts related to entities identified by uid values provided as arugments.
+
+usage:
+    gitdata show [-v | --verbose] [<args>...]
+
+options:
+    -v, --verbose   verbose output
+"""
+
 def initialize(location):
     """Initialize a gitdata repository in a location on the disk"""
     logger = logging.getLogger(__name__)

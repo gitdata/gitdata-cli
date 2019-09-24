@@ -7,6 +7,7 @@ The most commonly used gitdata commands are:
    remote     Manage set of remote locations
    show       Show an entity
    status     Show the data repository status
+   help       Show help
 
 See 'gitdata help <command>' for more information on a specific command.
 
@@ -40,6 +41,8 @@ def main():
             print(gitdata.cli.cli_remote.__doc__)
         elif topic == 'status':
             print(gitdata.repositories.STATUS_HELP)
+        elif topic == 'show':
+            print(gitdata.repositories.SHOW_HELP)
         elif topic == 'fetch':
             print(gitdata.repositories.FETCH_HELP)
         elif topic:
