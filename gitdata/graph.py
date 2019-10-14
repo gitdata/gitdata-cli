@@ -154,6 +154,10 @@ class Graph(object):
         if result:
             return result[0]
 
+    def exists(self, *args, **kwargs):
+        """Return True if specified nodes exist else return False"""
+        return bool(self.first(*args, **kwargs))
+
     def __str__(self):
         """Human friendly string representation"""
         return '\n'.join(repr(triple) for triple in self.triples())
