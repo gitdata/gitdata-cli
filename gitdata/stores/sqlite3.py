@@ -5,8 +5,8 @@
 import sqlite3
 
 import gitdata
-from .common import fixval, get_type_str, AbstractStore, entify, retype
 from gitdata.utils import new_uid
+from .common import fixval, get_type_str, AbstractStore, entify, retype
 
 valid_types = [
     'str', 'bytes', 'int', 'float', 'decimal.Decimal',
