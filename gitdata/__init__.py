@@ -8,3 +8,4 @@ import gitdata.stores
 from .__version__ import __version__
 
 from .graph import Graph, Node
+from .repositories import Repository
