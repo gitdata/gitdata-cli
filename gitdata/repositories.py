@@ -165,7 +165,7 @@ class Repository(object):
 
     def __init__(self, location=None):
         self.connection = None
-        self.location = location
+        self.location = location or os.getcwd()
         self.store = None
         self.graph = None
 
