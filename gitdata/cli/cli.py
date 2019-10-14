@@ -4,6 +4,8 @@ usage: gitdata [-V | --version] [-v | --verbose] [--help] <command> [<args>...]
 The most commonly used gitdata commands are:
    init       Create an empty GitData repository in a new directory
    fetch      Fetch facts
+   clear      Clear local data
+   dump       Print the graph to stdout
    remote     Manage set of remote locations
    show       Show an entity
    status     Show the data repository status
@@ -59,7 +61,16 @@ def main():
 
     elif args['<command>'] == 'fetch':
         with gitdata.repositories.Repository(os.getcwd()) as repository:
-            repository.fetch(args['<args>'])
+            for location in args['<args>']:
+                repository.fetch(location)
+
+    elif args['<command>'] == 'clear':
+        with gitdata.repositories.Repository(os.getcwd()) as repository:
+            repository.clear(args)
+
+    elif args['<command>'] == 'dump':
+        with gitdata.repositories.Repository(os.getcwd()) as repository:
+            repository.dump()
 
     elif args['<command>'] == 'show':
         with gitdata.repositories.Repository(os.getcwd()) as repository:

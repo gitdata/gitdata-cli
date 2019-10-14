@@ -2,6 +2,7 @@
     gitdata repositories
 """
 
+import datetime as dt
 import logging
 import os
 import sqlite3
@@ -55,6 +56,7 @@ def setup_repository(connection):
     try:
         for command in commands:
             cursor.execute(command)
+            # print('excecuting', command)
     finally:
         cursor.close()
 
@@ -163,8 +165,9 @@ class Repository(object):
 
     def __init__(self, location=None):
         self.connection = None
-        self.cursor = None
         self.location = location
+        self.store = None
+        self.graph = None
 
     def open(self):
         """Open the repository"""
@@ -172,6 +175,8 @@ class Repository(object):
         if location == ':memory:':
             self.connection = sqlite3.Connection(location)
             setup_repository(self.connection)
+            self.store = gitdata.stores.sqlite3.Sqlite3Store(location)
+            self.store.setup()
         else:
             location = location if location is not None else os.getcwd()
             pathname = os.path.join(location, '.gitdata')
@@ -183,8 +188,8 @@ class Repository(object):
                 logger.error(msg)
                 logger.debug('pathname is %r', pathname)
                 raise Exception(msg)
-        self.cursor = self.connection.cursor()
-        return self.cursor
+            self.store = gitdata.stores.sqlite3.Sqlite3Store(pathname)
+        self.graph = gitdata.Graph(self.store)
 
     def initialize(self, location):
         """Initialize a repository"""
@@ -201,7 +206,7 @@ class Repository(object):
 
     def close(self):
         """Close the repository"""
-        self.cursor.close()
+        # self.cursor.close()
 
     def get(self, name):
         remote = self.remotes().get(name)
@@ -229,17 +234,51 @@ class Repository(object):
             print('\n'.join(remotes))
 
     def fetch(self, location):
-        """Fetch facts"""
-        facts = gitdata.connectors.fetch(location)
-        print(list(facts))
+        """Fetch from location
+
+        Adds a location from which to fetch facts.  Fetching is a
+        lazy operation so the facts are downloaded only when they are
+        needed.
+        """
+        print('fetching', location)
+        if not self.graph.exists(kind='local', location=location):
+            now = dt.datetime.now()
+            self.graph.add(
+                dict(
+                    kind='local',
+                    location=location,
+                    created=now,
+                    updated=now,
+                )
+            )
+        print(self.graph)
+
+    def clear(self, args):
+        if '--all' in args['<args>']:
+            self.graph.store.clear()
+        else:
+            for local in self.graph.find(kind='fetched'):
+                local.delete()
+
+    def dump(self):
+        print(self.graph)
 
     def status(self, verbose=False):
         """Return the repository status"""
-        self.cursor.execute('select count(*) from facts')
-        fact_count = list(self.cursor.fetchall())[0][0]
-        self.cursor.execute('select count(*) from remotes')
-        remote_count = list(self.cursor.fetchall())[0][0]
-        return '{:,} facts\n{:,} remotes'.format(fact_count, remote_count)
+        local_count = len(self.graph.find(kind='local'))
+        cursor = self.store.connection.cursor()
+        try:
+            cursor.execute('select count(*) from facts')
+            fact_count = list(cursor.fetchall())[0][0]
+            cursor.execute('select count(*) from remotes')
+            remote_count = list(cursor.fetchall())[0][0]
+        finally:
+            cursor.close()
+        return '{:,} local\n{:,} facts\n{:,} remotes'.format(
+            local_count,
+            fact_count,
+            remote_count
+        )
 
     def remotes(self):
         """Add a remote data source to the repository"""

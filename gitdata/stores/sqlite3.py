@@ -180,8 +180,10 @@ class Sqlite3Store(AbstractStore):
 
     def clear(self):
         """clear the entity store"""
-        cursor = self.connection.cursor()
-        cursor.execute('delete from facts')
+        with self.connection as connection:
+            cursor = connection.cursor()
+            cursor.execute('delete from facts')
+            print('deleting all facts')
 
     def __len__(self):
         """return the number of facts stored"""

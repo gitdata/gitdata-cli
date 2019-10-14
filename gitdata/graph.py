@@ -19,6 +19,12 @@ class Node(object):
         self.graph.store.add([(self.uid, relation, uid)])
         return uid
 
+    def delete(self):
+        """Delete all facts related to a node"""
+        self.graph.store.remove(
+            self.graph.triples((self.uid, None, None))
+        )
+
     def __getitem__(self, name):
         values = self.graph.triples((self.uid, name, None))
         return values[0][-1] if values else None

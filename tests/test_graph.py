@@ -230,6 +230,16 @@ class GraphTests(unittest.TestCase):
         self.assertEqual(len(answer), 2)
         self.assertEqual(answer[1]['name'], 'Project Two')
 
+    def test_exists(self):
+        g = self.graph
+        g.add(self.data)
+
+        self.assertTrue(g.exists(kind='project'))
+
+        g.delete((None, 'kind', 'project'))
+
+        self.assertFalse(g.exists(kind='project'))
+
     def test_find_missing(self):
         g = self.graph
         g.add(self.data)
