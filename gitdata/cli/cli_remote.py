@@ -18,15 +18,17 @@ def remote():
     if arguments['add']:
         name = arguments['<name>']
         location = arguments['<location>']
-        repostitory = gitdata.repositories.Repository()
-        repostitory.remotes().add(name, location)
+        with gitdata.Repository() as repository:
+            repository.remotes().add(name, location)
+
     elif arguments['rm']:
         name = arguments['<name>']
-        repostitory = gitdata.repositories.Repository()
-        repostitory.remotes().remove(name)
+        with gitdata.Repository() as repository:
+            repository.remotes().remove(name)
+
     else:
-        repostitory = gitdata.repositories.Repository()
-        print(repostitory.remotes())
+        with gitdata.Repository() as repository:
+            print(repository.remotes())
 
 
 if __name__ == '__main__':
