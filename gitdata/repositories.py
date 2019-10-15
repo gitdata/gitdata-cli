@@ -31,10 +31,8 @@ Fetches facts from a specified location.  A location can be a URL, a
 local file or a predefined gitdata repository remote.
 
 usage:
-    gitdata fetch [-v | --verbose] <location>
+    gitdata fetch <location>
 
-options:
-    -v, --verbose   verbose output
 """
 
 SHOW_HELP = """
