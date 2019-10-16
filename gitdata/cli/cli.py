@@ -3,7 +3,8 @@ usage: gitdata [-V | --version] [-v | --verbose] [--help] <command> [<args>...]
 
 The most commonly used gitdata commands are:
    init       Create an empty GitData repository in a new directory
-   fetch      Fetch facts
+   fetch      Fetch data
+   explore    Explore data
    clear      Clear local data
    dump       Print the graph to stdout
    remote     Manage set of remote locations
@@ -21,6 +22,26 @@ import docopt
 import gitdata
 import gitdata.cli
 import gitdata.repositories
+from gitdata.utils import trim
+
+
+def print_help(doc):
+    """Print help text"""
+    print(trim(doc))
+
+
+class Reciever(object):
+    """Receives explore output"""
+
+    def print(self, text):
+        """Print output"""
+
+
+class Console(object):
+
+    def print(self, *text):
+        """Print to the console"""
+        print(*text)
 
 
 def main():
@@ -46,7 +67,9 @@ def main():
         elif topic == 'show':
             print(gitdata.repositories.SHOW_HELP)
         elif topic == 'fetch':
-            print(gitdata.repositories.FETCH_HELP)
+            print_help(gitdata.repositories.FETCH_HELP)
+        elif topic == 'explore':
+            print_help(gitdata.repositories.EXPLORE_HELP)
         elif topic:
             exit("%r is not a gitdata command. See 'gitdata help'." % topic)
         else:
@@ -63,6 +86,12 @@ def main():
         with gitdata.repositories.Repository(os.getcwd()) as repository:
             for location in args['<args>']:
                 repository.fetch(location)
+
+    elif args['<command>'] == 'explore':
+        console = Console()
+        with gitdata.Repository() as repository:
+            for location in args['<args>']:
+                repository.explore(location, console)
 
     elif args['<command>'] == 'clear':
         with gitdata.repositories.Repository(os.getcwd()) as repository:

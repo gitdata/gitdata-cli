@@ -9,7 +9,7 @@ import sqlite3
 import sys
 
 import gitdata.utils
-import gitdata.connectors
+import gitdata.connectors.console
 
 INIT_HELP = """
 Initializes a gitdata repository in the current directory.
@@ -27,12 +27,16 @@ options:
 """
 
 FETCH_HELP = """
-Fetches facts from a specified location.  A location can be a URL, a
+Fetches data from a specified location.  A location can be a URL, a
 local file or a predefined gitdata repository remote.
 
 usage:
     gitdata fetch <location>
 
+"""
+
+EXPLORE_HELP = """
+Explore data visually.
 """
 
 SHOW_HELP = """
@@ -238,7 +242,6 @@ class Repository(object):
         lazy operation so the facts are downloaded only when they are
         needed.
         """
-        print('fetching', location)
         if not self.graph.exists(kind='local', location=location):
             now = dt.datetime.now()
             self.graph.add(
@@ -249,7 +252,12 @@ class Repository(object):
                     updated=now,
                 )
             )
-        print(self.graph)
+
+    def explore(self, location, receiver):
+        """Explore a location saving results to a receiver"""
+        self.fetch(location)
+        connector = gitdata.connectors.console.ConsoleConnector()
+        connector.explore(location, receiver)
 
     def clear(self, args):
         if '--all' in args['<args>']:
