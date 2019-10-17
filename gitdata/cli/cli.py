@@ -30,20 +30,6 @@ def print_help(doc):
     print(trim(doc))
 
 
-class Reciever(object):
-    """Receives explore output"""
-
-    def print(self, text):
-        """Print output"""
-
-
-class Console(object):
-
-    def print(self, *text):
-        """Print to the console"""
-        print(*text)
-
-
 def main():
 
     args = docopt.docopt(__doc__,
@@ -88,10 +74,9 @@ def main():
                 repository.fetch(location)
 
     elif args['<command>'] == 'explore':
-        console = Console()
         with gitdata.Repository() as repository:
             for location in args['<args>']:
-                repository.explore(location, console)
+                repository.explore(location, 'stdout')
 
     elif args['<command>'] == 'clear':
         with gitdata.repositories.Repository(os.getcwd()) as repository:

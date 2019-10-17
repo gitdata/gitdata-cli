@@ -13,6 +13,6 @@ class ConsoleConnector(BaseConnector):
     reads = ['text']
     writes = ['stdout']
 
-    def explore(self, data, receiver):
-        """Process data"""
-        receiver.print('exploring', data)
+    def explore(self, data):
+        """Explore Text"""
+        print('exploring', data)

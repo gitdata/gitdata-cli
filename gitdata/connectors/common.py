@@ -7,7 +7,7 @@ import importlib
 import pkgutil
 
 import gitdata.connectors
-
+import gitdata.solutions
 
 def get_connectors():
     """generate connectors"""
@@ -35,6 +35,26 @@ def get_connector_graph():
     return edges
 
 
+def explore(location, destination):
+    """Explore a location"""
+    print('exploring location', location, 'to', destination)
+
+    connectors = get_connector_graph()
+    edges = [(a, b) for _,a,b in connectors]
+    print('connectors:')
+    for connector in connectors:
+        print('  ', connector)
+
+    cost = lambda *_: 1
+    planner = gitdata.solutions.Pathfinder(edges, cost)
+    print('plan:')
+    for n, route in enumerate(planner.find('location', destination)):
+        print('  route %-2d:' % n, route)
+
+        for segment in route:
+            print('    running', segment)
+
+
 class BaseConnector(object):
     """BaseConnector"""
 
@@ -53,6 +73,7 @@ class BaseConnector(object):
         """Connector graph edges"""
         return self.get_edges()
 
-    def explore(self, graph, receiver):
+    def explore(self, data):
         """Explore a graph
         """
+        print('exploring ', data)

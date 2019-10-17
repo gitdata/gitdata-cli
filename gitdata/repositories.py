@@ -253,11 +253,10 @@ class Repository(object):
                 )
             )
 
-    def explore(self, location, receiver):
-        """Explore a location saving results to a receiver"""
+    def explore(self, location, destination):
+        """Explore a location"""
         self.fetch(location)
-        connector = gitdata.connectors.console.ConsoleConnector()
-        connector.explore(location, receiver)
+        gitdata.connectors.explore(location, destination)
 
     def clear(self, args):
         if '--all' in args['<args>']:
