@@ -3,7 +3,6 @@
 """
 # pylint: disable=missing-docstring, no-member
 
-from decimal import Decimal
 import unittest
 
 import gitdata

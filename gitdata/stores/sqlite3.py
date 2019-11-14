@@ -163,7 +163,7 @@ class Sqlite3Store(AbstractStore):
         return uid
 
     def get(self, uid):
-        """get assertions from the entity store"""
+        """get an entity from the entity store"""
         select = 'select * from facts where entity=?'
         cursor = self.connection.cursor()
         cursor.execute(select, (uid,))
@@ -172,14 +172,14 @@ class Sqlite3Store(AbstractStore):
         return result
 
     def delete(self, uid):
-        """delete assertions from the entity store"""
+        """delete an entity from the entity store"""
         select = 'delete from facts where entity=?'
         with self.connection:
             cursor = self.connection.cursor()
             cursor.execute(select, (uid,))
 
     def clear(self):
-        """clear the entity store"""
+        """delete all facts from the entity store"""
         with self.connection as connection:
             cursor = connection.cursor()
             cursor.execute('delete from facts')
