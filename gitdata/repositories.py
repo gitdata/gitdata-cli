@@ -190,7 +190,6 @@ class Repository(object):
                 self.connection = sqlite3.Connection(pathname)
             else:
                 msg = 'fatal: not a GitData repository'
-                logger = logging.getLogger(__name__)
                 logger.error(msg)
                 logger.debug('pathname is %r', pathname)
                 raise Exception(msg)
