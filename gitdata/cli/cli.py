@@ -1,5 +1,5 @@
 """
-usage: gitdata [-V | --version] [-v | --verbose] [--help] <command> [<args>...]
+usage: gitdata [-V | --version] [-v | --verbose] [-d | --debug] [--help] <command> [<args>...]
 
 The most commonly used gitdata commands are:
    init       Create an empty GitData repository in a new directory
