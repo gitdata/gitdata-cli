@@ -86,7 +86,7 @@ def main():
 
     elif args['<command>'] == 'init':
         repository = gitdata.repositories.Repository(os.getcwd())
-        repository.initialize(os.getcwd())
+        repository.initialize()
 
     elif args['<command>'] == 'remote':
         gitdata.cli.remote()

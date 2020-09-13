@@ -193,8 +193,9 @@ class Repository(object):
             self.store = gitdata.stores.sqlite3.Sqlite3Store(pathname)
         self.graph = gitdata.Graph(self.store)
 
-    def initialize(self, location):
+    def initialize(self):
         """Initialize a repository"""
+        location = self.location
         if location != ':memory:':
             logger = logging.getLogger(__name__)
             logger.debug('initializing')
