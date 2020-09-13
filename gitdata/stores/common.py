@@ -142,3 +142,17 @@ class AbstractStore(object):
 
     def __len__(self):
         """return the number of facts stored"""
+
+    def __repr__(self):
+        pattern = (None, None, None)
+        return '{}({})'.format(
+            self.__class__.__name__,
+            ', '.join(
+                repr(rec)
+                for rec in self.triples(pattern)
+            )
+        )
+
+    def __str__(self):
+        pattern = (None, None, None)
+        return '\n'.join(repr(triple) for triple in self.triples(pattern))

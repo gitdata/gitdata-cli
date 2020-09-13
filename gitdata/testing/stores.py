@@ -219,3 +219,34 @@ class EntityStoreSuite(object):
         store = self.store
         store.add(self.triples)
         self.assertEqual(len(store), 6)
+
+    def test_str(self):
+        store = self.store
+        self.assertEqual(str(self.store), '')
+
+        store.add(self.triples)
+        self.assertEqual(
+            str(self.store),
+            (
+                "('2', 'name', 'Joe')\n"
+                "('2', 'age', 12)\n"
+                "('1', 'includes', '2')\n"
+                "('3', 'name', 'Sally')\n"
+                "('3', 'wage', 22.1)\n"
+                "('1', 'includes', '3')"
+            )
+        )
+
+    def test_repr(self):
+        store = self.store
+        store_name = self.store.__class__.__name__
+
+        self.assertEqual(repr(self.store), '%s()' % store_name)
+
+        store.add(self.triples)
+        self.assertEqual(
+            repr(self.store),
+            "%s(('2', 'name', 'Joe'), ('2', 'age', 12),"
+            " ('1', 'includes', '2'), ('3', 'name', 'Sally'),"
+            " ('3', 'wage', 22.1), ('1', 'includes', '3'))" % store_name
+        )
