@@ -16,7 +16,9 @@ class MemoryStore(common.AbstractStore):
         self.facts = []
 
     def add(self, facts):
-        self.facts.extend(facts)
+        self.facts.extend(
+            filter(lambda a: a[-1] is not None, facts)
+        )
 
     def remove(self, facts):
         for fact in facts:

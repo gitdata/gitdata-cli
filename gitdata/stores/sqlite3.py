@@ -56,12 +56,13 @@ class Sqlite3Store(AbstractStore):
         """add facts"""
         records = []
         for entity, attribute, value in facts:
-            value_type = get_type_str(value)
-            if value_type in valid_types:
-                records.append((entity, attribute, value_type, value))
-            else:
-                msg = 'unsupported type <type %s> in value %r'
-                raise Exception(msg % (value_type, value))
+            if value is not None:
+                value_type = get_type_str(value)
+                if value_type in valid_types:
+                    records.append((entity, attribute, value_type, value))
+                else:
+                    msg = 'unsupported type <type %s> in value %r'
+                    raise Exception(msg % (value_type, value))
 
         with self.connection:
             cursor = self.connection.cursor()

@@ -32,6 +32,32 @@ class EntityStoreSuite(object):
         joe = self.store.get('2')
         self.assertEqual(joe['name'], 'Joe')
 
+    def test_add_includes_none(self):
+        four = self.store.get('4')
+        self.assertEqual(four, None)
+        self.store.add([
+            ('4', 'name', 'Four'),
+            ('4', 'age', None)
+        ])
+        four = self.store.get('4')
+        self.assertEqual(four['name'], 'Four')
+        with self.assertRaises(KeyError):
+            four['age']  # pylint: disable=pointless-statement
+
+    def test_add_only_none(self):
+        four = self.store.get('4')
+        self.assertEqual(four, None)
+        self.store.add([
+            ('4', 'name', 'Four'),
+        ])
+        self.store.add([
+            ('4', 'age', None)
+        ])
+        four = self.store.get('4')
+        self.assertEqual(four['name'], 'Four')
+        with self.assertRaises(KeyError):
+            four['age']  # pylint: disable=pointless-statement
+
     def test_remove(self):
         joe = self.store.get('2')
         self.assertEqual(joe, None)
