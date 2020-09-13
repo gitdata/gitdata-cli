@@ -16,7 +16,10 @@ See 'gitdata help <command>' for more information on a specific command.
 
 """
 
+import logging
 import os
+import sys
+
 import docopt
 
 import gitdata
@@ -36,10 +39,30 @@ def main():
                          version='gitdata version {}'.format(gitdata.__version__),
                          options_first=True)
 
+    logger = logging.getLogger(__name__)
+
     verbose = False
     if '<args>' in args:
         if '-v' in args['<args>']:
             verbose = True
+
+    if args['-d']:
+        fmt = (
+            '%(asctime)s %(levelname)-8s %(name)-30s '
+            '%(lineno)-4s %(message)s'
+        )
+        console_formatter = logging.Formatter(fmt)
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(console_formatter)
+
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.DEBUG)
+        root_logger.addHandler(console_handler)
+        logger.debug('debugging is on')
+    else:
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.WARNING)
 
     if args['<command>'] == 'help':
         topic = next(iter(args['<args>']), None)
