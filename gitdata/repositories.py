@@ -11,6 +11,10 @@ import sys
 import gitdata.utils
 import gitdata.connectors.console
 
+
+logger = logging.getLogger(__name__)
+
+
 INIT_HELP = """
 Initializes a gitdata repository in the current directory.
 
@@ -197,7 +201,6 @@ class Repository(object):
         """Initialize a repository"""
         location = self.location
         if location != ':memory:':
-            logger = logging.getLogger(__name__)
             logger.debug('initializing')
             pathname = os.path.join(location, '.gitdata')
             if not os.path.exists(pathname):
@@ -243,7 +246,9 @@ class Repository(object):
         lazy operation so the facts are downloaded only when they are
         needed.
         """
+        logger.debug('fetching location %r', location)
         if not self.graph.exists(kind='local', location=location):
+            logger.debug('adding new location %r', location)
             now = dt.datetime.now()
             self.graph.add(
                 dict(
