@@ -92,14 +92,12 @@ def main():
         gitdata.cli.remote()
 
     elif args['<command>'] == 'fetch':
-        with gitdata.repositories.Repository(os.getcwd()) as repository:
-            for location in args['<args>']:
-                repository.fetch(location)
+        for location in args['<args>']:
+            gitdata.fetch(location)
 
     elif args['<command>'] == 'explore':
-        with gitdata.Repository() as repository:
-            for location in args['<args>']:
-                repository.explore(location, 'stdout')
+        for location in args['<args>']:
+            gitdata.explore(location)
 
     elif args['<command>'] == 'clear':
         with gitdata.repositories.Repository(os.getcwd()) as repository:
