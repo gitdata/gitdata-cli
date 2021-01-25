@@ -6,7 +6,7 @@ import inspect
 import importlib
 import logging
 import pkgutil
-import zoom
+
 
 # import gitdata.extractors
 from .common import BaseExtractor
